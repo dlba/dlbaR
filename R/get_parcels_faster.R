@@ -2,7 +2,7 @@
 
 #
 #not set up to return geoms yet
-get_parcels_faster <- function(fields=c('object_id', 'parcel_number'),returnGeom=F ) {
+get_parcels_faster <- function(fields=c('object_id', 'parcel_id'),returnGeom=F ) {
   library(httr)
   library(dplyr)
 
@@ -12,7 +12,8 @@ get_parcels_faster <- function(fields=c('object_id', 'parcel_number'),returnGeom
 
   returnGeom <- tolower(as.character(returnGeom))
 
-  url <- "https://services2.arcgis.com/qvkbeam7Wirps6zC/arcgis/rest/services/Parcels_Current/FeatureServer/0/query"
+  #url <- "https://services2.arcgis.com/qvkbeam7Wirps6zC/arcgis/rest/services/Parcels_Current/FeatureServer/0/query" #deprecated
+  url <- "https://services2.arcgis.com/qvkbeam7Wirps6zC/arcgis/rest/services/parcel_file_current/FeatureServer/0/query"
 
   ids <- GET(url,
              query=list(
