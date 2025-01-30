@@ -27,7 +27,7 @@ get_parcels_faster <- function(fields=c('object_id', 'parcel_id'),returnGeom=F )
 
   return <- list()
   j <- 0
-  for(i in 1:round(ids$count/2000+1)) {
+  for(i in 1:round(ids$count/1000+1)) { # new parcel file allows 1000 records in one query
     print(c(i, j))
     query <- POST(url, encode="form",                      # this will set the header for you
                             #body=list(file=upload_file("example.txt")),   # this is how to upload files
@@ -57,7 +57,7 @@ get_parcels_faster <- function(fields=c('object_id', 'parcel_id'),returnGeom=F )
 
       return[[i]] <- response }
 
-      j <- j+2000
+      j <- j+1000
 
   }
 
