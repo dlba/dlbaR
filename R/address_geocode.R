@@ -10,7 +10,7 @@ address_geocode <- function (df, address_column, crs = 4326) {
   names(adr_df) <- c("OBJECTID", "SingleLine")
 
 
-  if (nrow(df>1000)) {
+  if (nrow(df)>1000) {
 
     df_list <- split(adr_df, ceiling(seq(nrow(adr_df))/1000))
 
@@ -40,7 +40,9 @@ address_geocode <- function (df, address_column, crs = 4326) {
 
 
     results <-lapply(adr_json, function(x) {
-      response <- httr::POST(url = "https://opengis.detroitmi.gov/opengis/rest/services/Geocoders/CompositeGeocoder/GeocodeServer/geocodeAddresses",
+      #https://opengis.detroitmi.gov/opengis/rest/services/BaseUnits/BaseUnitGeocoder/GeocodeServer/geocodeAddresses
+      #https://opengis.detroitmi.gov/opengis/rest/services/Geocoders/CompositeGeocoder/GeocodeServer/geocodeAddresses
+      response <- httr::POST(url = "https://opengis.detroitmi.gov/opengis/rest/services/BaseUnits/BaseUnitGeocoder/GeocodeServer/geocodeAddresses",
                              body = list(addresses = x, f = "json", outSR = crs))
 
       response <- jsonlite::fromJSON(httr::content(response,
@@ -55,7 +57,8 @@ address_geocode <- function (df, address_column, crs = 4326) {
 
     results <- do.call(rbind, results)
 
-    results <- results[,c('attributes.ShortLabel',"attributes.parcel_id",'attributes.ResultID')]
+    results <- results[,c('attributes.ShortLabel',"attributes.parcel_id",'attributes.ResultID', 
+                          'attributes.address_id', 'attributes.building_id','attributes.Score')]
 
 
 
@@ -89,7 +92,8 @@ address_geocode <- function (df, address_column, crs = 4326) {
     results <- response[["locations"]]
     results[is.na(results)] <- NA
 
-    results <- results[,c('attributes.ShortLabel',"attributes.parcel_id","attributes.ResultID")]
+    results <- results[,c('attributes.ShortLabel',"attributes.parcel_id","attributes.ResultID", 
+                          'attributes.address_id', 'attributes.building_id', 'attributes.Score')]
 
     return(results)
   }
